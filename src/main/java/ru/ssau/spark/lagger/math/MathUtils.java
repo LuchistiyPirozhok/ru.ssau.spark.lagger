@@ -15,7 +15,7 @@ public class MathUtils {
     }
     public static double gamma(double x) { return exp(logGamma(x)); }
 
-    public static double factorial(int p) {
+    public static double factorial(double p) {
         return gamma(p+1);
     }
 
