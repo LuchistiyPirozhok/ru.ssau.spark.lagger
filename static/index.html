@@ -1,0 +1,69 @@
+<html>
+    <style>
+        td,th{
+            border:none;
+        }
+    </style>
+    <body>
+        <form action="/api/calc" method="post">
+            <table>
+                <th>
+                    Parameter
+                </th>
+                <th>
+                    From
+                </th>
+                <th>
+                    To
+                </th>
+                <th>
+                    Count
+                </th>
+                <tr>
+                    <td>
+                        a
+                    </td>
+                    <td>
+                        <input type="number" name="aFrom">
+                    </td>
+                    <td>
+                        <input type="number" name="aTo">
+                    </td>
+                    <td>
+                        <input type="number" name="aCount">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        g
+                    </td>
+                    <td>
+                        <input type="number" name="gFrom">
+                    </td>
+                    <td>
+                        <input type="number" name="gTo">
+                    </td>
+                    <td>
+                        <input type="number" name="gCount">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        k
+                    </td>
+                    <td>
+                        <input type="number" name="kFrom">
+                    </td>
+                    <td>
+                        <input type="number" name="kTo">
+                    </td>
+                </tr>
+            </table>
+            <input type="number" name="t">
+            <select name="method">
+                <option value="lagger">Lagger</option>
+            </select>
+            <input type="submit">
+        </form>
+    </body>
+</html>
