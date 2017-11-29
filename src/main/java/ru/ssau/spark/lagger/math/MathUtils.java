@@ -20,7 +20,7 @@ public class MathUtils {
     }
 
     public static double C(double n, double k) {
-        return gamma(k+1)/(gamma(n+1)*(gamma(k-n)));
+        return gamma(n+1)/(gamma(k+1)*(gamma(n-k+1)));
     }
 
     public static double C(double k, double s, double a) {
