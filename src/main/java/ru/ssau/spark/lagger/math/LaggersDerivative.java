@@ -14,8 +14,8 @@ public class LaggersDerivative {
         double result = pow(-gamma, n) * exp((-gamma * t) / 2);
         double summa = 0;
 
-        for (int j = 0; j < n; j++) {
-            summa += C(n, j) * pow(2, -j) * calculateSum(k, alfa, gamma, t, j, n);
+        for (int j = 0; j <= n; j++) {
+            summa += C(j, n) * pow(2, -j) * calculateSum(k, alfa, gamma, t, j, n);
         }
 
         return result * summa;
@@ -25,8 +25,8 @@ public class LaggersDerivative {
         double leftPart = pow(-gamma, n) * exp((-gamma * t) / 2);
         double rightPart = 0;
 
-        for (int j = 0; j < n; j++) {
-            double left = C(n, j) * pow(2, -j);
+        for (int j = 0; j <= n; j++) {
+            double left = C(j, n) * pow(2, -j);
 
             double firstSum = -n + j >= 0 ?
                     (alfa + 1) * (alfa + 2) * pow(-gamma * t, n + j) / (2 * factorial(-n + j)) : 0;
@@ -46,7 +46,7 @@ public class LaggersDerivative {
     private static double calculateSum(int k, double alfa, double gamma, double t, int j, int n) {
         double result = 0;
 
-        for (int s = 0; s < k; s++) {
+        for (int s = 0; s <= k; s++) {
             result += C(k, s, alfa) * calculateBiFunction(s, n, j, gamma, t);
         }
         return result;
