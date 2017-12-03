@@ -22,25 +22,24 @@ public class LaggersDerivative {
     }
 
     public static double getSecondPartDerivative(double alfa, double gamma, double t, int n) {
+
         double leftPart = pow(-gamma, n) * exp((-gamma * t) / 2);
         double rightPart = 0;
 
         for (int j = 0; j <= n; j++) {
             double left = C(n, j) * pow(2, -j);
 
-            double firstSum = -n + j >= 0 ?
-                    (alfa + 1) * (alfa + 2) * pow(-gamma * t, n + j) / (2 * factorial(-n + j)) : 0;
-            double secondSum = 1 - n + j >= 0 ?
-                    (alfa + 2) * pow(-gamma * t, 1 - n + j) / factorial(2 - n + j) : 0;
-
-            double thirdSum = 2 - n + j >= 0 ?
+            double firstTerm = -n + j >= 0 ?
+                    (alfa + 1) * (alfa + 2) * pow(-gamma * t, -n + j) / (2 * factorial(-n + j)) : 0;
+            double secondTerm = 1 - n + j >= 0 ?
+                    (alfa + 2) * pow(-gamma * t, 1 - n + j) / factorial(1 - n + j) : 0;
+            double thirdTerm = 2 - n + j >= 0 ?
                     pow(-gamma * t, 2 - n + j) / factorial(2 - n + j) : 0;
 
-            rightPart += left * (firstSum + secondSum + thirdSum);
+            rightPart += left * (firstTerm + secondTerm + thirdTerm);
         }
 
-
-        return leftPart * rightPart;
+       return leftPart * rightPart;
     }
 
     private static double calculateSum(int k, double alfa, double gamma, double t, int j, int n) {
