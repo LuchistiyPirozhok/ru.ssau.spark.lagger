@@ -11,7 +11,7 @@ public class DerivativeTest {
     private final int MAGIC_ALFA = 1;
     private final double MAGIC_T = 1;
     private final int MAGIC_GAMMA = 2;
-    private final int MAGIC_N = 2;
+    private final int MAGIC_N = 5;
 
 
     private double calculateLeftPart() {
@@ -24,7 +24,7 @@ public class DerivativeTest {
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(j, MAGIC_N) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
             rightPart += leftPart * (-MAGIC_N + j >= 0 ? pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / factorial(-MAGIC_N + j) : 0);
         }
 
@@ -41,7 +41,7 @@ public class DerivativeTest {
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(j, MAGIC_N) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
 
             double firstTerm = -MAGIC_N + j >= 0 ?
                     (MAGIC_ALFA + 1) * pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / factorial(-MAGIC_N + j) : 0;
@@ -64,7 +64,7 @@ public class DerivativeTest {
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(j, MAGIC_N) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
 
             double firstTerm = -MAGIC_N + j >= 0 ?
                     (MAGIC_ALFA + 1) * (MAGIC_ALFA + 2) * pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / (2 * factorial(-MAGIC_N + j)) : 0;
@@ -89,7 +89,7 @@ public class DerivativeTest {
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(j, MAGIC_N) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
 
             double firstTerm = -MAGIC_N + j >= 0 ? factorial(MAGIC_ALFA + 3) * pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / (6 * factorial(MAGIC_ALFA) * factorial(-MAGIC_N + j)) : 0;
             double secondTerm = 1 - MAGIC_N + j >= 0 ? (MAGIC_ALFA + 2) * (MAGIC_ALFA + 3) * pow(-MAGIC_GAMMA * MAGIC_T, 1 - MAGIC_N + j) / (2 * factorial(1 - MAGIC_N + j)) : 0;
@@ -113,7 +113,7 @@ public class DerivativeTest {
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(j, MAGIC_N) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
 
             double firstTerm = -MAGIC_N + j >= 0 ?
                     factorial(MAGIC_ALFA + 4) * pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / (24 * factorial(MAGIC_ALFA) * factorial(-MAGIC_N + j)) : 0;
@@ -137,12 +137,12 @@ public class DerivativeTest {
     }
 
     @Test
-    public void Fith() {
+    public void Fifth() {
         double expectedResult = calculateLeftPart();
         double rightPart = 0;
 
         for (int j = 0; j <= MAGIC_N; j++) {
-            double leftPart = C(MAGIC_N, j, 0) * pow(2, -j);
+            double leftPart = C(MAGIC_N, j) * pow(2, -j);
 
             double firstTerm = -MAGIC_N + j >= 0 ?
                     factorial(MAGIC_ALFA + 5) * pow(-MAGIC_GAMMA * MAGIC_T, -MAGIC_N + j) / (120 * factorial(MAGIC_ALFA) * factorial(-MAGIC_N + j)) : 0;
@@ -152,12 +152,12 @@ public class DerivativeTest {
                     factorial(MAGIC_ALFA + 5) * pow(-MAGIC_GAMMA * MAGIC_T, 2 - MAGIC_N + j) / (6 * factorial(MAGIC_ALFA + 2) + factorial(2 - MAGIC_N + j)) : 0;
             double fourthTerm = 3 - MAGIC_N + j >= 0 ?
                     (MAGIC_ALFA + 4) * (MAGIC_ALFA + 5) * pow(-MAGIC_GAMMA * MAGIC_T, 3 - MAGIC_N + j) / (2 * factorial(3 - MAGIC_N + j)) : 0;
-            double fithTerm = 4 - MAGIC_N + j >= 0 ?
+            double fifthTerm = 4 - MAGIC_N + j >= 0 ?
                     (MAGIC_ALFA + 5) * pow(-MAGIC_GAMMA * MAGIC_T, 4 - MAGIC_N + j) / factorial(4 - MAGIC_N + j) : 0;
             double sixTerm = 5 - MAGIC_N + j >= 0 ?
                     pow(-MAGIC_GAMMA * MAGIC_T, 5 - MAGIC_N + j) / factorial(5 - MAGIC_N + j) : 0;
 
-            rightPart += leftPart * (firstTerm + secondTerm + thirdTerm + fourthTerm + fithTerm + sixTerm);
+            rightPart += leftPart * (firstTerm + secondTerm + thirdTerm + fourthTerm + fifthTerm + sixTerm);
         }
 
         expectedResult = expectedResult * rightPart;

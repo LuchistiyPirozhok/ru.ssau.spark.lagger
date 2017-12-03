@@ -20,11 +20,7 @@ public class MathUtils {
     }
 
     public static double C(double n, double k) {
-        if (k > n) {
-            return 0;
-        }
-
-        return gamma(n+1)/(gamma(k+1)*(gamma(n-k+1)));
+        return factorial((int) n) / (factorial((int) k) * (factorial((int) (n - k))));
     }
 
     public static double C(double k, double s, double a) {

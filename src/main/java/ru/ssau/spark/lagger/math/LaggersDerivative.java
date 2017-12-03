@@ -15,7 +15,7 @@ public class LaggersDerivative {
         double summa = 0;
 
         for (int j = 0; j <= n; j++) {
-            summa += C(j, n) * pow(2, -j) * calculateSum(k, alfa, gamma, t, j, n);
+            summa += C(n, j) * pow(2, -j) * calculateSum(k, alfa, gamma, t, j, n);
         }
 
         return result * summa;
@@ -26,7 +26,7 @@ public class LaggersDerivative {
         double rightPart = 0;
 
         for (int j = 0; j <= n; j++) {
-            double left = C(j, n) * pow(2, -j);
+            double left = C(n, j) * pow(2, -j);
 
             double firstSum = -n + j >= 0 ?
                     (alfa + 1) * (alfa + 2) * pow(-gamma * t, n + j) / (2 * factorial(-n + j)) : 0;
