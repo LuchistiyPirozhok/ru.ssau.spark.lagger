@@ -1,8 +1,5 @@
 import org.junit.Test;
-import ru.ssau.spark.lagger.math.LaggersDerivative;
-
-import java.math.BigDecimal;
-
+import ru.ssau.spark.lagger.math.LagerrsDerivative;
 import static java.lang.Math.*;
 import static junit.framework.Assert.assertTrue;
 import static ru.ssau.spark.lagger.math.MathUtils.C;
@@ -36,7 +33,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(0, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(0, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -59,7 +56,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(1, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(1, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -84,7 +81,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(2, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(2, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -107,7 +104,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(3, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(3, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -141,7 +138,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(4, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(4, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -172,7 +169,7 @@ public class DerivativeTest {
 
         expectedResult = expectedResult * rightPart;
 
-        double realResult = LaggersDerivative.get(5, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
+        double realResult = LagerrsDerivative.get(5, MAGIC_ALFA, MAGIC_T, MAGIC_GAMMA, MAGIC_N);
 
         assertEqualsDouble(expectedResult, realResult);
     }
@@ -196,7 +193,7 @@ public class DerivativeTest {
         }
 
         expectedResult = expectedResult * rightPart;
-        double actual  = LaggersDerivative.getSecondPartDerivative(MAGIC_ALFA,MAGIC_GAMMA,MAGIC_T,MAGIC_N);
+        double actual  = LagerrsDerivative.getSecondPartDerivative(MAGIC_ALFA,MAGIC_GAMMA,MAGIC_T,MAGIC_N);
         assertEqualsDouble(expectedResult,actual);
     }
 

@@ -1,6 +1,5 @@
 import org.junit.Test;
-import ru.ssau.spark.lagger.math.LaggersIntegral;
-import ru.ssau.spark.lagger.math.MathUtils;
+import ru.ssau.spark.lagger.math.LagerrsIntegral;
 
 import static junit.framework.TestCase.assertEquals;
 import static java.lang.Math.*;
@@ -47,7 +46,7 @@ public class IntegralTest {
 
     @Test
     public void testZero() {
-        double testValue = Math.floor(LaggersIntegral.get(0,1,t,2) * 1000000) / 1000000;
+        double testValue = Math.floor(LagerrsIntegral.get(0,1,t,2) * 1000000) / 1000000;
         double expectedValue = Math.floor(Zero(1,t,2)*1000000)/1000000;
 
         assertEquals("zero test", testValue, expectedValue);
@@ -55,7 +54,7 @@ public class IntegralTest {
 
     @Test
     public void testFirst() {
-        double testValue = Math.floor(LaggersIntegral.get(1,1,t,2) * 1000000) / 1000000;
+        double testValue = Math.floor(LagerrsIntegral.get(1,1,t,2) * 1000000) / 1000000;
         double expectedValue = Math.floor(First(1,t,2)*1000000)/1000000;
 
         assertEquals("first test", testValue, expectedValue);
@@ -63,7 +62,7 @@ public class IntegralTest {
 
     @Test
     public void testSecond() {
-        float testValue = (float)LaggersIntegral.get(2,1,t,2);
+        float testValue = (float) LagerrsIntegral.get(2,1,t,2);
         float expectedValue = (float)Second(1,t,2);
 
         assertEquals("second test", testValue, expectedValue);
@@ -71,7 +70,7 @@ public class IntegralTest {
 
     @Test
     public void testThird() {
-        float testValue = (float)LaggersIntegral.get(3,1,25,2);
+        float testValue = (float) LagerrsIntegral.get(3,1,25,2);
         float expectedValue = (float)Third(1,25,2);
 
         assertEquals("third test", testValue, expectedValue);
@@ -79,7 +78,7 @@ public class IntegralTest {
 
     @Test
     public void testFourth() {
-        double testValue = Math.floor(LaggersIntegral.get(4,1,11,2) * 1000) / 1000;
+        double testValue = Math.floor(LagerrsIntegral.get(4,1,11,2) * 1000) / 1000;
         double expectedValue = Math.floor(Fourth(1,11,2)*1000)/1000;
 
         assertEquals("fourth test", testValue, expectedValue);
@@ -87,7 +86,7 @@ public class IntegralTest {
 
     @Test
     public void testFith() {
-        double testValue = Math.floor(LaggersIntegral.get(5,1,t,2) * 1000000) / 1000000;
+        double testValue = Math.floor(LagerrsIntegral.get(5,1,t,2) * 1000000) / 1000000;
         double expectedValue = Math.floor(Fith(1,t,2)*1000000)/1000000;
 
         assertEquals("fith test", testValue, expectedValue);

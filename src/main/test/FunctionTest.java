@@ -1,5 +1,5 @@
 import org.junit.Test;
-import ru.ssau.spark.lagger.math.LaggersFunction;
+import ru.ssau.spark.lagger.math.LagerrsFunction;
 
 import static java.lang.Math.*;
 import static junit.framework.TestCase.assertEquals;
@@ -17,7 +17,7 @@ public class FunctionTest {
         k = 0;
 
         float expected = (float) exp(-g * t / 2);
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     @Test
@@ -25,7 +25,7 @@ public class FunctionTest {
         k = 1;
 
         float expected = (float) (exp(-g * t / 2) * (a + 1 - g * t));
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class FunctionTest {
         double first = getFirstArg(2);
         double second = pow(g, 2) * pow(t, 2) - 2 * (a + 2) * g * t + (a + 1) * (a + 2);
         float expected = (float) (first * second);
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class FunctionTest {
         double second = (a + 1) * (a + 2) * (a + 3) - 3 * (a + 2) * (a + 3) * g * t + 3 * (a + 3) *
                 pow(g, 2) * pow(t, 2) - pow(g, 3) * pow(t, 3);
         float expected = (float) (first * second);
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class FunctionTest {
                 * (a + 4) * pow(g, 2) * pow(t, 2) - 4 * (a + 2) * (a + 3) * (a + 4) * g * t + (a + 1) * (a + 2)
                 * (a + 3) * (a + 4);
         float expected = (float) (first * second);
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class FunctionTest {
                 - 10 * (a + 4) * (a + 5) * pow(g, 3) * pow(t, 3) + 5 * (a + 5)
                 * pow(g, 4) * pow(t, 4) - pow(g, 5) * pow(t, 5);
         float expected = (float) (first * second);
-        assertEquals(expected, (float) LaggersFunction.get(a, t, g, k));
+        assertEquals(expected, (float) LagerrsFunction.get(a, t, g, k));
     }
 
     private double getFirstArg(double value) {

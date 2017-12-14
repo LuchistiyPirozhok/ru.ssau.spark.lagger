@@ -26,4 +26,5 @@ public class MathUtils {
     public static double C(double k, double s, double a) {
         return factorial( (int) (k + a))/(factorial( (int) (k - s))*(factorial( (int) (s + a))));
     }
+
 }

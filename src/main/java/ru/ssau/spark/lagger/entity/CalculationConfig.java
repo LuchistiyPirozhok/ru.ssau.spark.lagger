@@ -6,19 +6,10 @@ package ru.ssau.spark.lagger.entity;
 public class CalculationConfig {
 
     private String method;
-
-    private double aFrom;
-    private double aTo;
-    private int aCount;
-
-    private int t;
-
-    private double gFrom;
-    private double gTo;
-    private int gCount;
-
-    private int kFrom;
-    private int kTo;
+    private double gamma;
+    private double alfa;
+    private double k;
+    private int n;
 
     public String getMethod() {
         return method;
@@ -28,75 +19,35 @@ public class CalculationConfig {
         this.method = method;
     }
 
-    public double getaFrom() {
-        return aFrom;
+    public double getGamma() {
+        return gamma;
     }
 
-    public void setaFrom(double aFrom) {
-        this.aFrom = aFrom;
+    public void setGamma(double gamma) {
+        this.gamma = gamma;
     }
 
-    public double getaTo() {
-        return aTo;
+    public double getAlfa() {
+        return alfa;
     }
 
-    public void setaTo(double aTo) {
-        this.aTo = aTo;
+    public void setAlfa(double alfa) {
+        this.alfa = alfa;
     }
 
-    public int getaCount() {
-        return aCount;
+    public double getK() {
+        return k;
     }
 
-    public void setaCount(int aCount) {
-        this.aCount = aCount;
+    public void setK(double k) {
+        this.k = k;
     }
 
-    public int getT() {
-        return t;
+    public int getN() {
+        return n;
     }
 
-    public void setT(int t) {
-        this.t = t;
-    }
-
-    public double getgFrom() {
-        return gFrom;
-    }
-
-    public void setgFrom(double gFrom) {
-        this.gFrom = gFrom;
-    }
-
-    public double getgTo() {
-        return gTo;
-    }
-
-    public void setgTo(double gTo) {
-        this.gTo = gTo;
-    }
-
-    public int getgCount() {
-        return gCount;
-    }
-
-    public void setgCount(int gCount) {
-        this.gCount = gCount;
-    }
-
-    public int getkFrom() {
-        return kFrom;
-    }
-
-    public void setkFrom(int kFrom) {
-        this.kFrom = kFrom;
-    }
-
-    public int getkTo() {
-        return kTo;
-    }
-
-    public void setkTo(int kTo) {
-        this.kTo = kTo;
+    public void setN(int n) {
+        this.n = n;
     }
 }

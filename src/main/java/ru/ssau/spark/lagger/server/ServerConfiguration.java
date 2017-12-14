@@ -15,6 +15,7 @@ public class ServerConfiguration {
     public JavaSparkContext getSparcContext(){
         SparkConf conf = new SparkConf().setAppName("appname").setMaster("local[2]");
         JavaSparkContext sc = new JavaSparkContext(conf);
+
         return sc;
     }
 
