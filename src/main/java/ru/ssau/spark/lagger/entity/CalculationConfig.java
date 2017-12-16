@@ -1,15 +1,37 @@
 package ru.ssau.spark.lagger.entity;
 
+import ru.ssau.spark.lagger.logic.CalculationUtils;
+
+import java.io.Serializable;
+
 /**
  * Created by Dmitry on 28.11.2017.
  */
-public class CalculationConfig {
+public class CalculationConfig implements Serializable {
 
     private String method;
+    private double h = CalculationUtils.DEFAULT_H;
+    private double delta = CalculationUtils.DELTA_2E_NEG1;
     private double gamma;
     private double alfa;
-    private double k;
+    private int k;
     private int n;
+
+    public double getH() {
+        return h;
+    }
+
+    public void setH(double h) {
+        this.h = h;
+    }
+
+    public double getDelta() {
+        return delta;
+    }
+
+    public void setDelta(double delta) {
+        this.delta = delta;
+    }
 
     public String getMethod() {
         return method;
@@ -35,11 +57,11 @@ public class CalculationConfig {
         this.alfa = alfa;
     }
 
-    public double getK() {
+    public int getK() {
         return k;
     }
 
-    public void setK(double k) {
+    public void setK(int k) {
         this.k = k;
     }
 

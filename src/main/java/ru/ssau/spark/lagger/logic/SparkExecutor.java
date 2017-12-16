@@ -1,18 +1,16 @@
 package ru.ssau.spark.lagger.logic;
 
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.*;
 import org.apache.spark.mllib.linalg.distributed.*;
-import org.apache.spark.rdd.RDD;
 import ru.ssau.spark.lagger.entity.CalculationConfig;
+import ru.ssau.spark.lagger.entity.MatrixRow;
 import ru.ssau.spark.lagger.entity.SingleTask;
 
-import java.sql.Time;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -20,7 +18,7 @@ import java.util.List;
 /**
  * Created by Dmitry on 28.11.2017.
  */
-public class SparkExecutor {
+public class SparkExecutor implements Serializable {
 
     public static final String METHOD_LAGGER="lagger";
     public static final String METHOD_LAGGER_DERIVATIVE="lagger_der";
@@ -29,7 +27,6 @@ public class SparkExecutor {
 
     private CalculationConfig config;
     private JavaSparkContext context;
-    private List<SingleTask> taskList;
 
     private long start;
 
@@ -37,15 +34,65 @@ public class SparkExecutor {
     public SparkExecutor(CalculationConfig config, JavaSparkContext context){
         this.config=config;
         this.context=context;
-
     }
-    public DenseMatrix calculateSequential(TimeParameters timeParameters){
-        //RDD<MatrixEntry> entries = new RDD
 
+    public double[][] calculateSequential(TimeParameters timeParameters){
+        start();
+        List<MatrixRow> rows = new ArrayList<>();
+        int maxLength=0;
+        switch(config.getMethod()){
+            case METHOD_LAGGER:
+                for(int i = 0; i<=config.getK();i++){
+                    MatrixRow row =CalculationUtils.getMatrixRow(
+                            new LagerrTaoFanction(config.getAlfa(),config.getGamma(),i),
+                            config.getDelta(), config.getH());
+                    if(maxLength<row.getValues().size()) maxLength = row.getValues().size();
+                    rows.add(row);
+                }
+                break;
+            case METHOD_LAGGER_DERIVATIVE:
+                for(int i = 0; i<=config.getK();i++){
+                    MatrixRow row =CalculationUtils.getMatrixRow(
+                            new LagerrDerivativeTaoFunction(i,config.getAlfa(),config.getGamma(),config.getN()),
+                            config.getDelta(), config.getH());
+                    if(maxLength<row.getValues().size()) maxLength = row.getValues().size();
+                    rows.add(row);
 
-
-
-        return null;
+                }
+                break;
+            case METHOD_LAGGER_INTEGRAL:
+                for(int i = 0; i<=config.getK();i++){
+                    MatrixRow row =CalculationUtils.getMatrixRow(
+                            new LagerrIntegralTaoFunction(i,config.getAlfa(),config.getGamma()),
+                            config.getDelta(), config.getH());
+                    if(maxLength<row.getValues().size()) maxLength = row.getValues().size();
+                    rows.add(row);
+                }
+                break;
+        }
+        double[][] l = new double[maxLength][rows.size()];
+        for(MatrixRow row: rows){
+            for(MatrixEntry entry: row.getValues()){
+                l[(int) entry.i()][(int) entry.j()]=entry.value();
+            }
+        }
+        timeParameters.setTimeL(end());
+        start();
+        double[][] lonLt=new double[maxLength][maxLength];
+        for(int i = 0; i<maxLength;i++){
+            for(int j = 0; j<maxLength;j++){
+                double sum = 0;
+                for(int k = 0 ; k<rows.size();k++){
+                    sum+=l[i][k]*l[j][k];
+                }
+                lonLt[i][j]=(sum<1E-9 || Double.isNaN(sum)) ? 0 : sum;
+            }
+        }
+        timeParameters.setTimeLonLt(end());
+        start();
+        double[][] invert = CalculationUtils.invert(lonLt);
+        timeParameters.setTimeLonLtInverted(end());
+        return invert;
     }
 
     public BlockMatrix calculateParallel(TimeParameters timeParameters){
@@ -53,17 +100,17 @@ public class SparkExecutor {
         List<ITaoFunction> functions = new ArrayList<>();
         switch(config.getMethod()){
             case METHOD_LAGGER:
-                for(int i = 0; i<config.getK();i++){
+                for(int i = 0; i<=config.getK();i++){
                     functions.add(new LagerrTaoFanction(config.getAlfa(),config.getGamma(),i));
                 }
                 break;
             case METHOD_LAGGER_DERIVATIVE:
-                for(int i = 0; i<config.getK();i++){
+                for(int i = 0; i<=config.getK();i++){
                     functions.add(new LagerrDerivativeTaoFunction(i,config.getAlfa(),config.getGamma(),config.getN()));
                 }
                 break;
             case METHOD_LAGGER_INTEGRAL:
-                for(int i = 0; i<config.getK();i++){
+                for(int i = 0; i<=config.getK();i++){
                     functions.add(new LagerrIntegralTaoFunction(i,config.getAlfa(),config.getGamma()));
                 }
                 break;
@@ -72,29 +119,28 @@ public class SparkExecutor {
 
         JavaRDD<ITaoFunction> functionsRdd = context.parallelize(functions);
         System.out.println("******************************* COUNTING L *******************************");
+        double delta = config.getDelta();
+        double h=config.getH();
         start();
-        JavaRDD<List<MatrixEntry>> map = functionsRdd.map(function -> CalculationUtils.getMatrixRow(function, CalculationUtils.DELTA_1E_NEG1, CalculationUtils.DEFAULT_H).getValues());
+
+        JavaRDD<List<MatrixEntry>> map = functionsRdd.map(function -> CalculationUtils.getMatrixRow(function,delta,h).getValues());
         JavaRDD<MatrixEntry> flatten=map.flatMap(y->y.iterator());
         CoordinateMatrix matrix = new CoordinateMatrix(flatten.rdd());
         BlockMatrix matL = matrix.toBlockMatrix().cache();
         matL.validate();
-        timeParameters.setTimeLParallel(end());
+        timeParameters.setTimeL(end());
         System.out.println("******************************* COUNTING L*L^1 *******************************");
         start();
         BlockMatrix matLTransp = matL.transpose();
         BlockMatrix multiply = matL.multiply(matLTransp);
-        timeParameters.setTimeLonLtParallel(end());
-        matrix=null;
-        matL=null;
-        matLTransp=null;
-        map=null;
-        flatten=null;
+        timeParameters.setTimeLonLt(end());
+
         start();
         System.out.println("******************************* SVD *******************************");
         IndexedRowMatrix indexedRowMatrix = multiply.toIndexedRowMatrix();
         long cols = indexedRowMatrix.numCols();
         SingularValueDecomposition<IndexedRowMatrix, Matrix> svd = indexedRowMatrix.computeSVD((int) cols, true, indexedRowMatrix.computeSVD$default$3());
-        indexedRowMatrix=null;
+
         System.out.println("******************************* DIAG S *******************************");
         double[] doubles = svd.s().toArray();
         List<MatrixEntry> invSEntries = new ArrayList<>();
@@ -104,7 +150,6 @@ public class SparkExecutor {
         }
         CoordinateMatrix invSCoord = new CoordinateMatrix(context.parallelize(invSEntries).rdd());
 
-        invSEntries=null;
         BlockMatrix invS = invSCoord.toBlockMatrix();
         BlockMatrix U = svd.U().toBlockMatrix();
         System.out.println("******************************* V TO BLOCK MATRIX *******************************");
@@ -113,13 +158,14 @@ public class SparkExecutor {
         List<MatrixEntry> vEntries=new ArrayList<>();
         for(int i = 0; i < vDense.numRows(); i ++){
             for(int j = 0 ; j < vDense.numCols();j++){
-                vEntries.add(new MatrixEntry(i,j,vDenseArray[i*vDense.numRows()+j]));
+                vEntries.add(new MatrixEntry(i,j,vDenseArray[i*vDense.numCols()+j]));
             }
         }
         BlockMatrix V = new CoordinateMatrix(context.parallelize(vEntries).rdd()).toBlockMatrix();
         System.out.println("******************************* V*S*U *******************************");
-        timeParameters.setTimeLonLtInvertedParallel(end());
-        return V.multiply(invS).multiply(U);
+        BlockMatrix result = (V.multiply(invS)).multiply(U.transpose());
+        timeParameters.setTimeLonLtInverted(end());
+        return result;
     }
 
     private void start(){
