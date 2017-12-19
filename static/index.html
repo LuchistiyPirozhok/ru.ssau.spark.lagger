@@ -4,69 +4,150 @@
     <script src="./jquery-3.2.1.min.js"></script>
 </head>
 <style>
+        body{
+           display: flex;
+           flex-flow: column;
+           align-items: center;
+           justify-content: center;
+           background:#ffd196;
+        }
         td,th{
             border:none;
         }
+
+        .loader{
+          width: 100%;
+          text-align: center;
+          display: inline-block;
+          vertical-align: top;
+        }
+        .container{
+            padding:20px;
+            background:white;
+            border:1px solid white;
+            border-radius:8px;
+            box-shadow: 8px 8px 8px 4px #555555;
+            color: #353535;
+        }
+
+        svg path,
+        svg rect{
+          fill: #FF6700;
+        }
+
+        #submit{
+           margin:8px;
+           float: right;
+           background: white;
+           border: 1px solid #55555596;
+           padding: 8px;
+           border-radius: 4px;
+           font-weight: bolder;
+           box-shadow: 4px 4px 5px #555555;
+           transition: all 0.3s;
+           outline:none;
+        }
+
+       #submit:hover {
+         background: #55555596;
+         color: white;
+         transition: all 0.3s;
+         box-shadow: none;
+       }
+
+       input,select{
+        padding:4px;
+        border-radius:4px;
+        border: 1px solid #55555596;
+       }
+
+
+
+
     </style>
 <body>
-<form action="/api/calc" method="post" id="form">
-    <table>
-        <tr>
-            <td>k:</td>
-            <td>
-                <input type="number" name="k" value="1" min="1" step="any">
-            </td>
-        </tr>
-        <tr>
-            <td>alfa:</td>
-            <td>
-                <input type="number" name="alfa" value="1" step="any">
-            </td>
-        </tr>
-        <tr>
-            <td>gamma:</td>
-            <td>
-                <input type="number" name="gamma" value="1" step="any">
-            </td>
-        </tr>
-        <tr id="n" style="visibility:hidden;">
-            <td>n:</td>
-            <td>
-                <input type="number" name="n" value="1" step="any">
-            </td>
-        </tr>
-        <tr>
-            <td>h:</td>
-            <td>
-                <input type="number" name="h" value="0.0001" step="any">
-            </td>
-        </tr>
-        <tr>
-            <td>delta:</td>
-            <td>
-                <input type="number" name="delta" value="0.02" step="any">
-            </td>
-        </tr>
-        <tr>
-            <td>Тип:</td>
-            <td>
-                <select name="method" id="method">
-                    <option value="lagger">Функция</option>
-                    <option value="lagger_int">Интеграл</option>
-                    <option value="lagger_der">Производная</option>
-                </select>
-            </td>
-        </tr>
-    </table>
-    <input type="submit" label="Отправить" id="submit">
-</form>
-<div id="result">
+<div class="container">
+    <form action="/api/calc" method="post" id="form">
+        <table>
+            <tr>
+                <td>k:</td>
+                <td>
+                    <input type="number" name="k" value="1" min="1" step="any">
+                </td>
+            </tr>
+            <tr>
+                <td>alfa:</td>
+                <td>
+                    <input type="number" name="alfa" value="1" step="any">
+                </td>
+            </tr>
+            <tr>
+                <td>gamma:</td>
+                <td>
+                    <input type="number" name="gamma" value="1" step="any">
+                </td>
+            </tr>
+            <tr id="n" style="visibility:hidden;">
+                <td>n:</td>
+                <td>
+                    <input type="number" name="n" value="1" step="any">
+                </td>
+            </tr>
+            <tr>
+                <td>h:</td>
+                <td>
+                    <input type="number" name="h" value="0.0001" step="any">
+                </td>
+            </tr>
+            <tr>
+                <td>delta:</td>
+                <td>
+                    <input type="number" name="delta" value="0.02" step="any">
+                </td>
+            </tr>
+            <tr>
+                <td>Тип:</td>
+                <td>
+                    <select name="method" id="method">
+                        <option value="lagger">Функция</option>
+                        <option value="lagger_int">Интеграл</option>
+                        <option value="lagger_der">Производная</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" label="Отправить" id="submit">
+    </form>
+    <div id="loading" style="display:none">
+        <div class="loader loader--style1">
+            <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+               width="40px" height="40px" viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+              <path opacity="0.2" fill="#000" d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946
+                s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634
+                c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"/>
+              <path fill="#000" d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0
+                C22.32,8.481,24.301,9.057,26.013,10.047z">
+                <animateTransform attributeType="xml"
+                  attributeName="transform"
+                  type="rotate"
+                  from="0 20 20"
+                  to="360 20 20"
+                  dur="0.5s"
+                  repeatCount="indefinite"/>
+                </path>
+              </svg>
+        </div>
+    </div>
 
+    <div id="result">
+
+    </div>
 </div>
 <script>
            var method = document.getElementById("method");
            var n = document.getElementById("n");
            var result = document.getElementById("result");
+           var loading = document.getElementById("loading");
 
            method.addEventListener("change", function(event){
              var value = event.target.value;
@@ -78,16 +159,25 @@
            });
 
            $('#form').on('submit', function(event) {
+            result.style.display="none";
+            loading.style.display="block";
             event.preventDefault(); // or return false, your choice
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'post',
                 data: $(this).serialize(),
                 success: function(data, textStatus, jqXHR) {
+
+                    loading.style.display="none";
+                    result.style.display="inherit";
+
                     // if success, HTML response is expected, so replace current
                     if(textStatus === 'success') {
                         // https://stackoverflow.com/a/1236378/4946681
                         result.innerHTML=compileTemplate(data);
+
+                    }else{
+                        result.innerHTML="something went wrong";
                     }
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
@@ -96,6 +186,7 @@
                 } else {
                     alert('Unknown error returned while saving' + (typeof errorThrown == 'string' && errorThrown.trim().length > 0 ? ':\n' + errorThrown : ''));
                 }
+                loading.style.display="none";
             });
         });
 
@@ -127,9 +218,7 @@
                 </tr>
              </table>
             `
-
         }
-
 
         </script>
 </body>
