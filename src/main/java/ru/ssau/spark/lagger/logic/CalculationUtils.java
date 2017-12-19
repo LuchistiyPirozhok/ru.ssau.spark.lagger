@@ -1,0 +1,176 @@
+package ru.ssau.spark.lagger.logic;
+
+import org.apache.spark.mllib.linalg.distributed.MatrixEntry;
+import ru.ssau.spark.lagger.entity.MatrixRow;
+
+import java.util.List;
+
+import java.util.ArrayList;
+
+/**
+ * Created by Dmitry on 09.12.2017.
+ */
+public class CalculationUtils {
+    public static final double DEFAULT_H=0.0001;
+    public static final double DELTA_5E_NEG2 = 0.05;
+    public static final double DELTA_2E_NEG2 = 0.02;
+    public static final double DELTA_1E_NEG1 = 0.1;
+    public static final double DELTA_2E_NEG1 = 0.2;
+
+    public static double derivateNumeric(ITaoFunction function,double tao, double h){
+        return (function.getValue(tao+h)-function.getValue(tao))/h;
+    }
+    public static double derivateNumeric(ITaoFunction function,double tao){
+        return derivateNumeric(function,tao,DEFAULT_H);
+    }
+
+    public static double derivateNumeric2(ITaoFunction function,double tao,double h){
+        return (function.getValue(tao+h)-2*function.getValue(tao)+function.getValue(tao-h))/Math.pow(h,2);
+    }
+    public static double derivateNumeric2(ITaoFunction function,double tao){
+        return derivateNumeric2(function,tao,DEFAULT_H);
+    }
+
+    public static double getDeltaTao(ITaoFunction function, double delta, double h ){
+        double secondDerivation = derivateNumeric2(function,0,h);
+        return Math.sqrt(8*delta/Math.abs(secondDerivation));
+    }
+
+    public static double getDeltaTao(ITaoFunction function, double delta){
+        return  getDeltaTao(function,delta,DEFAULT_H);
+    }
+
+    public static MatrixRow getMatrixRow(ITaoFunction function, double delta, double h){
+
+        List<MatrixEntry> matrixEntries=new ArrayList<>();
+
+        double tao = 0;
+        double deltaTao = getDeltaTao(function,delta,h);
+        boolean inDeltaCorridor = false;
+        Double prevDerivationSignum=null;
+        int i = 0;
+        int insideCounter=0;
+        while(!inDeltaCorridor){
+            double value = function.getValue(tao);
+            matrixEntries.add(new MatrixEntry(i,function.getK(),value));
+            i++;
+            //if we enter the corridor
+            if(Math.abs(value)<delta){
+                //check if first derivation equals 0 or has different sign with previous step
+                double derivation = derivateNumeric(function,tao,h);
+                double derivationSignum = Math.signum(derivation);
+                if(derivationSignum==0 || (prevDerivationSignum!=null && prevDerivationSignum!=derivationSignum)){
+                    inDeltaCorridor=true;
+                }
+                insideCounter++;
+                if(insideCounter==5){
+                    inDeltaCorridor=true;
+                }
+                prevDerivationSignum=derivationSignum;
+            }else if(prevDerivationSignum!=null){
+                //if we leave corridor clear threshold
+                prevDerivationSignum=null;
+            }
+            tao+=deltaTao;
+        }
+
+        return new MatrixRow(matrixEntries,deltaTao,matrixEntries.size()*deltaTao);
+    }
+
+    public static double[][] invert(double a[][])
+    {
+        int n = a.length;
+        double x[][] = new double[n][n];
+        double b[][] = new double[n][n];
+        int index[] = new int[n];
+        for (int i=0; i<n; ++i)
+            b[i][i] = 1;
+
+        // Transform the matrix into an upper triangle
+        gaussian(a, index);
+
+        // Update the matrix b[i][j] with the ratios stored
+        for (int i=0; i<n-1; ++i)
+            for (int j=i+1; j<n; ++j)
+                for (int k=0; k<n; ++k)
+                    b[index[j]][k]
+                            -= a[index[j]][i]*b[index[i]][k];
+
+        // Perform backward substitutions
+        for (int i=0; i<n; ++i)
+        {
+            x[n-1][i] = b[index[n-1]][i]/a[index[n-1]][n-1];
+            for (int j=n-2; j>=0; --j)
+            {
+                x[j][i] = b[index[j]][i];
+                for (int k=j+1; k<n; ++k)
+                {
+                    x[j][i] -= a[index[j]][k]*x[k][i];
+                }
+                x[j][i] /= a[index[j]][j];
+            }
+        }
+        return x;
+    }
+
+// Method to carry out the partial-pivoting Gaussian
+// elimination.  Here index[] stores pivoting order.
+
+    public static void gaussian(double a[][], int index[])
+    {
+        int n = index.length;
+        double c[] = new double[n];
+
+        // Initialize the index
+        for (int i=0; i<n; ++i)
+            index[i] = i;
+
+        // Find the rescaling factors, one from each row
+        for (int i=0; i<n; ++i)
+        {
+            double c1 = 0;
+            for (int j=0; j<n; ++j)
+            {
+                double c0 = Math.abs(a[i][j]);
+                if (c0 > c1) c1 = c0;
+            }
+            c[i] = c1;
+        }
+
+        // Search the pivoting element from each column
+        int k = 0;
+        for (int j=0; j<n-1; ++j)
+        {
+            double pi1 = 0;
+            for (int i=j; i<n; ++i)
+            {
+                double pi0 = Math.abs(a[index[i]][j]);
+                pi0 /= c[index[i]];
+                if (pi0 > pi1)
+                {
+                    pi1 = pi0;
+                    k = i;
+                }
+            }
+
+            // Interchange rows according to the pivoting order
+            int itmp = index[j];
+            index[j] = index[k];
+            index[k] = itmp;
+            for (int i=j+1; i<n; ++i)
+            {
+                double pj = a[index[i]][j]/a[index[j]][j];
+
+                // Record pivoting ratios below the diagonal
+                a[index[i]][j] = pj;
+
+                // Modify other elements accordingly
+                for (int l=j+1; l<n; ++l)
+                    a[index[i]][l] -= pj*a[index[j]][l];
+            }
+        }
+    }
+
+
+
+}

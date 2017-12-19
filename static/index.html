@@ -1,0 +1,136 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="./jquery-3.2.1.min.js"></script>
+</head>
+<style>
+        td,th{
+            border:none;
+        }
+    </style>
+<body>
+<form action="/api/calc" method="post" id="form">
+    <table>
+        <tr>
+            <td>k:</td>
+            <td>
+                <input type="number" name="k" value="1" min="1" step="any">
+            </td>
+        </tr>
+        <tr>
+            <td>alfa:</td>
+            <td>
+                <input type="number" name="alfa" value="1" step="any">
+            </td>
+        </tr>
+        <tr>
+            <td>gamma:</td>
+            <td>
+                <input type="number" name="gamma" value="1" step="any">
+            </td>
+        </tr>
+        <tr id="n" style="visibility:hidden;">
+            <td>n:</td>
+            <td>
+                <input type="number" name="n" value="1" step="any">
+            </td>
+        </tr>
+        <tr>
+            <td>h:</td>
+            <td>
+                <input type="number" name="h" value="0.0001" step="any">
+            </td>
+        </tr>
+        <tr>
+            <td>delta:</td>
+            <td>
+                <input type="number" name="delta" value="0.02" step="any">
+            </td>
+        </tr>
+        <tr>
+            <td>Тип:</td>
+            <td>
+                <select name="method" id="method">
+                    <option value="lagger">Функция</option>
+                    <option value="lagger_int">Интеграл</option>
+                    <option value="lagger_der">Производная</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" label="Отправить" id="submit">
+</form>
+<div id="result">
+
+</div>
+<script>
+           var method = document.getElementById("method");
+           var n = document.getElementById("n");
+           var result = document.getElementById("result");
+
+           method.addEventListener("change", function(event){
+             var value = event.target.value;
+             if(value==="lagger_der"){
+               n.style.visibility = "visible";
+             }else{
+               n.style.visibility = "hidden";
+             }
+           });
+
+           $('#form').on('submit', function(event) {
+            event.preventDefault(); // or return false, your choice
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'post',
+                data: $(this).serialize(),
+                success: function(data, textStatus, jqXHR) {
+                    // if success, HTML response is expected, so replace current
+                    if(textStatus === 'success') {
+                        // https://stackoverflow.com/a/1236378/4946681
+                        result.innerHTML=compileTemplate(data);
+                    }
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                if(jqXHR.status == 0 || jqXHR == 302) {
+                    alert('Your session has ended due to inactivity after 10 minutes.\nPlease refresh this page, or close this window and log back in to system.');
+                } else {
+                    alert('Unknown error returned while saving' + (typeof errorThrown == 'string' && errorThrown.trim().length > 0 ? ':\n' + errorThrown : ''));
+                }
+            });
+        });
+
+        function compileTemplate(data){
+            return `<table>
+                <tr>
+                    <td>
+                        Последовательно:
+                    </td>
+                    <td>
+                       <table>
+                          <tr><td>L</td><td>${data.seq.timeL}</td></tr>
+                          <tr><td>L*L^T</td><td>${data.seq.timeLonLt}</td></tr>
+                          <tr><td>(L*L^T)^{-1}</td><td>${data.seq.timeLonLtInverted}</td></tr>
+                       </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Параллельно:
+                    </td>
+                    <td>
+                       <table>
+                          <tr><td>L</td><td>${data.prl.timeL}</td></tr>
+                          <tr><td>L*L^T</td><td>${data.prl.timeLonLt}</td></tr>
+                          <tr><td>(L*L^T)^{-1}</td><td>${data.prl.timeLonLtInverted}</td></tr>
+                       </table>
+                    </td>
+                </tr>
+             </table>
+            `
+
+        }
+
+
+        </script>
+</body>
+</html>
