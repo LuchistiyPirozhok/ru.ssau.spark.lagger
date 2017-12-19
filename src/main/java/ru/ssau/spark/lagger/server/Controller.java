@@ -1,11 +1,13 @@
 package ru.ssau.spark.lagger.server; /**
  * Created by Dmitry on 04.11.2017.
  */
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import ru.ssau.spark.lagger.entity.CalculationConfig;
 import ru.ssau.spark.lagger.logic.SparkExecutor;
 import ru.ssau.spark.lagger.logic.TimeParameters;
@@ -20,13 +22,16 @@ public class Controller {
     @Value("${spark.master.parallel}")
     private String master;
 
+    @Value("${spark.driver.maxResultSize}")
+    private String maxSize;
+
     @RequestMapping(value="/api/calc",method = RequestMethod.POST)
     public Object doCalculations(CalculationConfig config) {
         JavaSparkContext sc=null;
         try {
             TimeParameters timeParameters = new TimeParameters();
             TimeParameters timeParameters2 = new TimeParameters();
-            SparkConf conf = new SparkConf().setAppName("appname").setMaster(master);
+            SparkConf conf = new SparkConf().setAppName("appname").setMaster(master).set("spark.driver.maxResultSize", maxSize);
 
             sc = new JavaSparkContext(conf);
             SparkExecutor executor = new SparkExecutor(config, sc);
