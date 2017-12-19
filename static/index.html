@@ -162,6 +162,7 @@
 
            $('#form').on('submit', function(event) {
             result.style.display="none";
+            result.innerHTML="";
             loading.style.display="block";
             event.preventDefault(); // or return false, your choice
             $.ajax({
