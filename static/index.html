@@ -12,6 +12,8 @@
            align-items: center;
            justify-content: center;
            background:#ffd196;
+           width:100%;
+           height:100%;
         }
         td,th{
             border:none;
@@ -162,6 +164,7 @@
 
            $('#form').on('submit', function(event) {
             result.style.display="none";
+            result.innerHTML="";
             loading.style.display="block";
             event.preventDefault(); // or return false, your choice
             $.ajax({
