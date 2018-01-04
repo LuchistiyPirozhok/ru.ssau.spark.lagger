@@ -26,6 +26,7 @@
           vertical-align: top;
         }
         .container{
+            position: relative;
             padding:20px;
             background:white;
             border:1px solid white;
@@ -119,6 +120,11 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <image id="func-img" src="func.png"></image>
+                </td>
+            </tr>
         </table>
         <input type="submit" label="Отправить" id="submit">
     </form>
@@ -146,12 +152,15 @@
     <div id="result">
 
     </div>
+
+
 </div>
 <script>
            var method = document.getElementById("method");
            var n = document.getElementById("n");
            var result = document.getElementById("result");
            var loading = document.getElementById("loading");
+           var funcImg = document.getElementById("func-img");
 
            method.addEventListener("change", function(event){
              var value = event.target.value;
@@ -160,6 +169,17 @@
              }else{
                n.style.visibility = "hidden";
              }
+               switch (value) {
+                   case "lagger":
+                       funcImg.setAttribute("src", "func.png");
+                       break;
+                   case "lagger_der":
+                       funcImg.setAttribute("src", "derivate.png");
+                       break;
+                   case "lagger_int":
+                       funcImg.setAttribute("src", "integral.png");
+                       break;
+               }
            });
 
            $('#form').on('submit', function(event) {
@@ -203,9 +223,9 @@
                     </td>
                     <td>
                        <table>
-                          <tr><td>L</td><td>${data.seq.timeL}</td></tr>
-                          <tr><td>L*L^T</td><td>${data.seq.timeLonLt}</td></tr>
-                          <tr><td>(L*L^T)^{-1}</td><td>${data.seq.timeLonLtInverted}</td></tr>
+                          <tr><td>L</td><td>${data.seq.timeL} мс</td></tr>
+                          <tr><td>L*L^T</td><td>${data.seq.timeLonLt} мс</td></tr>
+                          <tr><td>(L*L^T)^{-1}</td><td>${data.seq.timeLonLtInverted} мс</td></tr>
                        </table>
                     </td>
                 </tr>
@@ -215,9 +235,9 @@
                     </td>
                     <td>
                        <table>
-                          <tr><td>L</td><td>${data.prl.timeL}</td></tr>
-                          <tr><td>L*L^T</td><td>${data.prl.timeLonLt}</td></tr>
-                          <tr><td>(L*L^T)^{-1}</td><td>${data.prl.timeLonLtInverted}</td></tr>
+                          <tr><td>L</td><td>${data.prl.timeL} мс</td></tr>
+                          <tr><td>L*L^T</td><td>${data.prl.timeLonLt} мс</td></tr>
+                          <tr><td>(L*L^T)^{-1}</td><td>${data.prl.timeLonLtInverted} мс</td></tr>
                        </table>
                     </td>
                 </tr>
